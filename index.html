@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID ARCADE — Unblocked Games</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background: #0a0a0f;
+        color: #fff;
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Animated background grid */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background:
+            linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridScroll 20s linear infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+    @keyframes gridScroll {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(50px, 50px); }
+    }
+
+    /* Scanline overlay */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0,0,0,0.08) 2px,
+            rgba(0,0,0,0.08) 4px
+        );
+        pointer-events: none;
+        z-index: 999;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* Header */
+    header {
+        text-align: center;
+        padding: 40px 0 30px;
+    }
+    .logo {
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(36px, 7vw, 72px);
+        font-weight: 900;
+        letter-spacing: 8px;
+        background: linear-gradient(135deg, #00ffcc, #ff0055, #aa00ff, #00ffcc);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 4s ease infinite;
+        text-shadow: none;
+        filter: drop-shadow(0 0 30px rgba(0,255,204,0.3));
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .subtitle {
+        font-size: clamp(12px, 2vw, 18px);
+        color: #666;
+        letter-spacing: 12px;
+        margin-top: 8px;
+        text-transform: uppercase;
+    }
+    .game-count {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #00ffcc;
+        opacity: 0.7;
+    }
+
+    /* Search bar */
+    .search-bar {
+        max-width: 500px;
+        margin: 25px auto 35px;
+        position: relative;
+    }
+    .search-bar input {
+        width: 100%;
+        padding: 14px 20px 14px 45px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(0,255,204,0.15);
+        border-radius: 12px;
+        color: #fff;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.3s;
+    }
+    .search-bar input:focus {
+        border-color: rgba(0,255,204,0.4);
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 0 20px rgba(0,255,204,0.1);
+    }
+    .search-bar input::placeholder { color: #555; }
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #555;
+        font-size: 18px;
+    }
+
+    /* Category tags */
+    .tags {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 35px;
+    }
+    .tag {
+        padding: 8px 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        font-size: 13px;
+        color: #888;
+        cursor: pointer;
+        transition: all 0.3s;
+        user-select: none;
+    }
+    .tag:hover, .tag.active {
+        border-color: #00ffcc;
+        color: #00ffcc;
+        background: rgba(0,255,204,0.08);
+    }
+
+    /* Game grid */
+    .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 22px;
+    }
+
+    .game-card {
+        position: relative;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    .game-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--accent);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 30px color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+
+    .card-banner {
+        height: 160px;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .card-banner::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0; right: 0;
+        height: 60px;
+        background: linear-gradient(transparent, rgba(10,10,15,0.95));
+    }
+    .card-icon {
+        font-size: 56px;
+        z-index: 1;
+        filter: drop-shadow(0 0 20px var(--accent));
+    }
+
+    .card-body {
+        padding: 18px 20px 20px;
+    }
+    .card-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 6px;
+        letter-spacing: 1px;
+    }
+    .card-desc {
+        font-size: 13px;
+        color: #777;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+    .card-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .card-tag {
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        background: rgba(255,255,255,0.04);
+        color: #888;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Featured card (Neon Void) */
+    .game-card.featured {
+        grid-column: 1 / -1;
+        max-width: 100%;
+    }
+    .game-card.featured .card-banner {
+        height: 220px;
+    }
+    .game-card.featured .card-icon {
+        font-size: 80px;
+    }
+    .game-card.featured .card-title {
+        font-size: 22px;
+    }
+    .featured-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        padding: 4px 12px;
+        background: linear-gradient(135deg, #ff0055, #aa00ff);
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        z-index: 2;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .play-btn {
+        display: inline-block;
+        padding: 8px 24px;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        color: var(--accent);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+        margin-top: 8px;
+    }
+    .game-card:hover .play-btn {
+        background: var(--accent);
+        color: #000;
+        box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 50px 0 30px;
+        color: #333;
+        font-size: 13px;
+    }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { color: #00ffcc; }
+
+    /* No results */
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: #444;
+        font-size: 18px;
+        display: none;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+        .games-grid { grid-template-columns: 1fr; }
+        .game-card.featured .card-banner { height: 160px; }
+        .subtitle { letter-spacing: 6px; }
+        header { padding: 25px 0 20px; }
+    }
+
+    /* Animations */
+    .game-card { opacity: 0; animation: fadeUp 0.5s ease forwards; }
+    .game-card:nth-child(1) { animation-delay: 0.05s; }
+    .game-card:nth-child(2) { animation-delay: 0.1s; }
+    .game-card:nth-child(3) { animation-delay: 0.15s; }
+    .game-card:nth-child(4) { animation-delay: 0.2s; }
+    .game-card:nth-child(5) { animation-delay: 0.25s; }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="logo">VOID ARCADE</div>
+        <div class="subtitle">Unblocked Games</div>
+        <div class="game-count" id="game-count"></div>
+    </header>
+
+    <div class="search-bar">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="search" placeholder="Search games..." autocomplete="off">
+    </div>
+
+    <div class="tags" id="tags">
+        <span class="tag active" data-tag="all">All Games</span>
+        <span class="tag" data-tag="shooter">Shooter</span>
+        <span class="tag" data-tag="strategy">Strategy</span>
+        <span class="tag" data-tag="platformer">Platformer</span>
+        <span class="tag" data-tag="multiplayer">Multiplayer</span>
+    </div>
+
+    <div class="games-grid" id="grid"></div>
+    <div class="no-results" id="no-results">No games found. Try a different search.</div>
+
+    <footer>
+        VOID ARCADE &copy; 2026 &mdash; HTML5 games, no downloads, play anywhere
+    </footer>
+</div>
+
+<script>
+const GAMES = [
+    {
+        title: "NEON VOID",
+        desc: "Intense space shooter with 15 sectors, co-op multiplayer, drones, bosses, and ship customization. The flagship game.",
+        icon: "🚀",
+        href: "../index.html",
+        accent: "#00ffcc",
+        bg: "radial-gradient(ellipse at center, #002a22 0%, #0a0a0f 70%)",
+        tags: ["shooter", "multiplayer"],
+        featured: true
+    },
+    {
+        title: "VOID SHOOTER",
+        desc: "Retro FPS with raycasting engine. Fight through waves of enemies in neon-lit corridors. DOOM meets cyberpunk.",
+        icon: "🔫",
+        href: "fps.html",
+        accent: "#ff0055",
+        bg: "radial-gradient(ellipse at center, #2a0011 0%, #0a0a0f 70%)",
+        tags: ["shooter"]
+    },
+    {
+        title: "BUILD ROYALE",
+        desc: "Build walls, grab weapons, outplay bots. Top-down build-and-shoot arena inspired by 1v1.lol.",
+        icon: "🏗️",
+        href: "build-royale.html",
+        accent: "#ff8800",
+        bg: "radial-gradient(ellipse at center, #2a1800 0%, #0a0a0f 70%)",
+        tags: ["shooter", "strategy"]
+    },
+    {
+        title: "BLOON DEFENSE",
+        desc: "Pop waves of bloons with monkey towers! Upgrade paths, MOAB bosses, 40+ waves. BTD-style neon tower defense.",
+        icon: "🎈",
+        href: "tower-defense.html",
+        accent: "#aa00ff",
+        bg: "radial-gradient(ellipse at center, #1a0033 0%, #0a0a0f 70%)",
+        tags: ["strategy"]
+    },
+    {
+        title: "BARRY'S PRISON RUN",
+        desc: "Escape Barry's prison! 15 obstacle courses with lasers, lava, crushers, and Barry's taunts. Classic obby.",
+        icon: "🏃",
+        href: "obby.html",
+        accent: "#88ff00",
+        bg: "radial-gradient(ellipse at center, #1a2a00 0%, #0a0a0f 70%)",
+        tags: ["platformer"]
+    }
+];
+
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const noResults = document.getElementById('no-results');
+const countEl = document.getElementById('game-count');
+let activeTag = 'all';
+
+function renderGames(filter = '', tag = 'all') {
+    grid.innerHTML = '';
+    const filtered = GAMES.filter(g => {
+        const matchSearch = !filter || g.title.toLowerCase().includes(filter) || g.desc.toLowerCase().includes(filter);
+        const matchTag = tag === 'all' || g.tags.includes(tag);
+        return matchSearch && matchTag;
+    });
+
+    noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+    countEl.textContent = filtered.length + ' GAME' + (filtered.length !== 1 ? 'S' : '') + ' AVAILABLE';
+
+    filtered.forEach((g, i) => {
+        const card = document.createElement('a');
+        card.href = g.href;
+        card.className = 'game-card' + (g.featured ? ' featured' : '');
+        card.style.setProperty('--accent', g.accent);
+        card.style.setProperty('--bg', g.bg);
+        card.style.animationDelay = (i * 0.05 + 0.05) + 's';
+
+        card.innerHTML = `
+            <div class="card-banner" style="background:${g.bg}">
+                ${g.featured ? '<span class="featured-badge">FEATURED</span>' : ''}
+                <span class="card-icon">${g.icon}</span>
+            </div>
+            <div class="card-body">
+                <div class="card-title">${g.title}</div>
+                <div class="card-desc">${g.desc}</div>
+                <div class="card-tags">
+                    ${g.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+                </div>
+                <span class="play-btn">PLAY NOW</span>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// Search
+search.addEventListener('input', e => {
+    renderGames(e.target.value.toLowerCase(), activeTag);
+});
+
+// Tags
+document.getElementById('tags').addEventListener('click', e => {
+    if (e.target.classList.contains('tag')) {
+        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        activeTag = e.target.dataset.tag;
+        renderGames(search.value.toLowerCase(), activeTag);
+    }
+});
+
+renderGames();
+</script>
+</body>
+</html>
