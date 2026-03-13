@@ -133,19 +133,39 @@
     .game-card:hover .play-btn { background: var(--accent); color: #000; }
     footer { text-align: center; padding: 40px 0 25px; color: #333; font-size: 12px; }
     .no-results { text-align: center; padding: 60px 20px; color: #444; font-size: 16px; display: none; }
-    /* Iframe overlay */
+    /* Game page overlay - Classroom 6x style */
     #game-overlay {
         display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: #000; z-index: 10000;
+        background: #0a0a0f; z-index: 10000; overflow-y: auto;
     }
-    #game-overlay iframe { width: 100%; height: 100%; border: none; }
-    #game-overlay .close-btn {
-        position: fixed; top: 10px; left: 10px; z-index: 10001;
-        padding: 8px 16px; background: rgba(0,0,0,0.8); border: 1px solid #00ffcc;
-        color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 12px;
-        cursor: pointer; border-radius: 6px; backdrop-filter: blur(4px); transition: all 0.2s;
+    .game-page-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 20px; background: rgba(0,0,0,0.6);
+        border-bottom: 1px solid rgba(0,255,204,0.1);
     }
-    #game-overlay .close-btn:hover { background: #00ffcc; color: #000; }
+    .game-page-header .back-btn {
+        padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid #00ffcc;
+        color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px;
+        cursor: pointer; border-radius: 6px; transition: all 0.2s; letter-spacing: 1px;
+    }
+    .game-page-header .back-btn:hover { background: #00ffcc; color: #000; }
+    .game-page-title {
+        font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700;
+        color: #fff; letter-spacing: 2px;
+    }
+    .game-page-actions { display: flex; gap: 10px; }
+    .game-page-actions button {
+        padding: 8px 18px; border-radius: 6px; font-family: 'Orbitron', sans-serif;
+        font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+    }
+    .btn-fullscreen {
+        background: rgba(255,255,255,0.05); border: 1px solid #ff8800; color: #ff8800;
+    }
+    .btn-fullscreen:hover { background: #ff8800; color: #000; }
+    .game-frame-container {
+        width: 100%; height: calc(100vh - 56px); position: relative;
+    }
+    .game-frame-container iframe { width: 100%; height: 100%; border: none; }
     @media (max-width: 600px) {
         .games-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
         .game-card.featured { grid-column: 1 / -1; }
@@ -183,15 +203,23 @@
     <footer>VOID ARCADE &copy; 2026 &mdash; HTML5 games, no downloads, play anywhere</footer>
 </div>
 <div id="game-overlay">
-    <button class="close-btn" onclick="closeGame()">← BACK</button>
-    <iframe id="game-frame" allow="fullscreen; autoplay; clipboard-write; gamepad" allowfullscreen></iframe>
+    <div class="game-page-header">
+        <button class="back-btn" onclick="closeGame()">← BACK TO GAMES</button>
+        <div class="game-page-title" id="game-page-title"></div>
+        <div class="game-page-actions">
+            <button class="btn-fullscreen" id="btn-fullscreen" onclick="openFullscreen()">⛶ FULLSCREEN (NEW TAB)</button>
+        </div>
+    </div>
+    <div class="game-frame-container">
+        <iframe id="game-frame" allow="fullscreen; autoplay; clipboard-write; gamepad" allowfullscreen></iframe>
+    </div>
 </div>
 <script>
 const GAMES = [
     // ===== OUR GAMES =====
     { title:"NEON VOID", desc:"Space shooter with 15 sectors, co-op multiplayer, drones, bosses, ship customization.", icon:"🚀", href:"../index.html", accent:"#00ffcc", bg:"radial-gradient(ellipse at center,#002a22 0%,#0a0a0f 70%)", tags:["shooter","multiplayer"], featured:true },
     { title:"VOID SHOOTER", desc:"Retro raycasting FPS. DOOM meets cyberpunk. 3 weapons, 4 enemy types, wave combat.", icon:"🔫", href:"fps.html", accent:"#ff0055", bg:"radial-gradient(ellipse at center,#2a0011 0%,#0a0a0f 70%)", tags:["shooter"] },
-    { title:"1v1.LOL", desc:"Build, shoot, outplay. The real 1v1.lol.", icon:"🏗️", href:"build-royale.html", accent:"#ff8800", bg:"radial-gradient(ellipse at center,#2a1800 0%,#0a0a0f 70%)", tags:["shooter","strategy","multiplayer"] },
+    { title:"1v1.LOL", desc:"Build, shoot, outplay. The real 1v1.lol.", icon:"🏗️", embed:"https://1v1.lol", direct:true, accent:"#ff8800", bg:"radial-gradient(ellipse at center,#2a1800 0%,#0a0a0f 70%)", tags:["shooter","strategy","multiplayer"] },
     { title:"BLOON DEFENSE", desc:"BTD-style tower defense. Monkey towers, bloon layers, MOAB bosses, 40+ waves.", icon:"🎈", href:"tower-defense.html", accent:"#aa00ff", bg:"radial-gradient(ellipse at center,#1a0033 0%,#0a0a0f 70%)", tags:["strategy"] },
     { title:"BARRY'S PRISON RUN", desc:"Escape Barry's prison! 15 obby levels with lasers, lava, crushers.", icon:"🏃", href:"obby.html", accent:"#88ff00", bg:"radial-gradient(ellipse at center,#1a2a00 0%,#0a0a0f 70%)", tags:["platformer"] },
     // ===== IO GAMES =====
@@ -328,16 +356,23 @@ const countEl = document.getElementById('game-count');
 const overlay = document.getElementById('game-overlay');
 const gameFrame = document.getElementById('game-frame');
 let activeTag = 'all';
+let currentGameUrl = '';
 
-function openGame(url) {
+function openGame(url, title) {
+    currentGameUrl = url;
     gameFrame.src = url;
+    document.getElementById('game-page-title').textContent = title || '';
     overlay.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 function closeGame() {
     overlay.style.display = 'none';
     gameFrame.src = '';
+    currentGameUrl = '';
     document.body.style.overflow = '';
+}
+function openFullscreen() {
+    if (currentGameUrl) window.open(currentGameUrl, '_blank');
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGame(); });
 
@@ -358,7 +393,8 @@ function renderGames(filter = '', tag = 'all') {
         card.style.setProperty('--accent', g.accent);
         card.style.setProperty('--bg', g.bg);
         card.style.animationDelay = Math.min(i * 0.02, 0.5) + 's';
-        if (g.embed) card.onclick = () => openGame(g.embed);
+        if (g.embed && g.direct) card.onclick = () => window.open(g.embed, '_blank');
+        else if (g.embed) card.onclick = () => openGame(g.embed, g.title);
 
         card.innerHTML = `
             <div class="card-banner" style="background:${g.bg}">
