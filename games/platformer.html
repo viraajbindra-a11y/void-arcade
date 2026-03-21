@@ -262,23 +262,21 @@ const LEVELS=[];
   LEVELS.push(m);
 })();
 
-// L8: The Ascent - wall jump chimney
+// L8: The Ascent - extended wall jump climb with platforms
 (function(){
   const m=makeEmpty();
-  // Bottom
-  hLine(m,27,1,10,1);
+  // Bottom platform
+  hLine(m,27,1,8,1);
   m[26][2]=8;
-  // Two walls forming a chimney
-  for(let r=4;r<=27;r++){m[r][8]=1;m[r][15]=1;}
-  // Some ledges inside chimney
-  hLine(m,23,8,10,1);
-  hLine(m,19,13,15,1);
-  hLine(m,15,8,10,1);
-  hLine(m,11,13,15,1);
-  hLine(m,7,8,10,1);
-  // Top exit
-  hLine(m,3,15,20,1);
-  m[2][18]=6;
+  // Chimney 1: tight shaft
+  for(let r=10;r<=27;r++){m[r][7]=1;m[r][11]=1;}
+  // Platform at top of chimney 1
+  hLine(m,10,11,14,1);
+  // Chimney 2: another shaft going up
+  for(let r=3;r<=10;r++){m[r][14]=1;m[r][18]=1;}
+  // Top exit platform
+  hLine(m,3,18,22,1);
+  m[2][20]=6;
   LEVELS.push(m);
 })();
 
@@ -317,9 +315,9 @@ const LEVELS=[];
   m[24][2]=8;
   // Phase 1: dash gap
   hLine(m,25,13,15,1);
-  // Phase 2: wall jump section
+  // Phase 2: wall jump section (tight shaft)
   for(let r=15;r<=25;r++)m[r][18]=1;
-  for(let r=15;r<=22;r++)m[r][23]=1;
+  for(let r=15;r<=22;r++)m[r][22]=1;
   // Phase 3: crumble bridge
   setTiles(m,15,26,[4,4,4,4]);
   // Phase 4: bounce pad on small platform
@@ -475,14 +473,14 @@ $('btn-quit2').onclick=function(){buildLS();state='levels';show('levels');};
 
 // === COLLISION ===
 function tAt(r,c){if(r<0||r>=H_||c<0||c>=W_)return 1;return map[r][c];}
-function solid(t){return t===1;}
-function scanRect(x,y,w,h){
+function solid(t){return t===1||t===4;}
+function scanRect(x,y,w,h,includeBounce){
   var l=Math.floor(x/T),r=Math.floor((x+w-0.01)/T);
   var t_=Math.floor(y/T),b=Math.floor((y+h-0.01)/T);
   var res={solid:false};
   for(var row=t_;row<=b;row++)for(var col=l;col<=r;col++){
     var tile=tAt(row,col);
-    if(solid(tile)||tile===5){res.solid=true;res.row=row;res.col=col;if(tile===5){res.bounce=true;res.brow=row;res.bcol=col;}return res;}
+    if(solid(tile)||(includeBounce&&tile===5)){res.solid=true;res.row=row;res.col=col;if(tile===5){res.bounce=true;res.brow=row;res.bcol=col;}return res;}
     if(tile===2)res.spike=true;
     if(tile===6)res.goal=true;
   }
@@ -591,7 +589,7 @@ function update(dt){
 
   // Move X
   p.x+=p.vx;
-  var r=scanRect(p.x,p.y,PW,PH);
+  var r=scanRect(p.x,p.y,PW,PH,false);
   if(r.solid){if(p.vx>0)p.x=r.col*T-PW;else if(p.vx<0)p.x=(r.col+1)*T;p.vx=0;}
   if(r.spike){die();return;}if(r.goal){win();return;}
   var mc=collideMover(p.x,p.y,PW,PH);
@@ -600,7 +598,7 @@ function update(dt){
   // Move Y
   p.y+=p.vy;
   var wasG=p.ground;p.ground=false;
-  r=scanRect(p.x,p.y,PW,PH);
+  r=scanRect(p.x,p.y,PW,PH,true);
   if(r.solid){
     if(p.vy>0){
       p.y=r.row*T-PH;
@@ -649,7 +647,7 @@ function update(dt){
   }
 
   // Goal overlap
-  r=scanRect(p.x,p.y,PW,PH);if(r.goal){win();return;}
+  r=scanRect(p.x,p.y,PW,PH,false);if(r.goal){win();return;}
 
   // OOB
   if(p.y>H_*T+40||p.x<-40||p.x>W_*T+40){die();return;}
