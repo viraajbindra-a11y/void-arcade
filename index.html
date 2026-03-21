@@ -327,10 +327,258 @@
     .tag.tag-recent { border-color:rgba(170,0,255,0.4); color:#aa00ff; }
     .tag.tag-recent:hover { border-color:rgba(170,0,255,0.6); color:#cc44ff; }
     .tag.tag-recent.active { border-color:#aa00ff; color:#aa00ff; background:rgba(170,0,255,0.1); box-shadow:0 0 12px rgba(170,0,255,0.2); }
+
+    /* ========== SCROLL PROGRESS BAR ========== */
+    #scroll-progress {
+        position:fixed; top:0; left:0; height:3px; width:0%;
+        background:linear-gradient(90deg, #00ffcc, #ff0055, #aa00ff);
+        z-index:99999; transition:width 0.05s linear; pointer-events:none;
+        box-shadow:0 0 10px rgba(0,255,204,0.6), 0 0 20px rgba(255,0,85,0.3);
+    }
+
+    /* ========== STAR RATING ========== */
+    .star-rating { display:flex; gap:1px; margin-top:4px; }
+    .star-rating .star {
+        cursor:pointer; font-size:13px; color:#333; transition:all 0.15s;
+        filter:grayscale(1); opacity:0.4;
+    }
+    .star-rating .star.filled {
+        color:#ffcc00; filter:grayscale(0); opacity:1;
+        text-shadow:0 0 8px rgba(255,204,0,0.6);
+    }
+    .star-rating .star:hover {
+        color:#ffcc00; filter:grayscale(0); opacity:1;
+        text-shadow:0 0 8px rgba(255,204,0,0.6); transform:scale(1.3);
+    }
+
+    /* ========== PLAY TIME TOOLTIP ========== */
+    .playtime-tooltip {
+        position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.9); border:1px solid rgba(0,255,204,0.3); border-radius:6px;
+        padding:4px 10px; font-size:9px; color:#00ffcc; white-space:nowrap;
+        pointer-events:none; opacity:0; transition:opacity 0.2s; z-index:10;
+        backdrop-filter:blur(10px); letter-spacing:1px;
+        font-family:'Orbitron',sans-serif;
+    }
+    .game-card:hover .playtime-tooltip { opacity:1; }
+
+    /* ========== ACHIEVEMENT PANEL ========== */
+    .trophy-btn {
+        position:fixed; top:16px; right:16px; z-index:9000;
+        width:44px; height:44px; border-radius:50%;
+        background:rgba(0,0,0,0.6); border:1px solid rgba(255,204,0,0.3);
+        color:#ffcc00; font-size:20px; cursor:pointer;
+        backdrop-filter:blur(10px); transition:all 0.3s;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .trophy-btn:hover { border-color:#ffcc00; background:rgba(255,204,0,0.1); box-shadow:0 0 20px rgba(255,204,0,0.3); transform:scale(1.1); }
+    .trophy-btn .badge-count {
+        position:absolute; top:-4px; right:-4px; background:#ff0055;
+        color:#fff; font-size:9px; min-width:16px; height:16px;
+        border-radius:8px; display:flex; align-items:center; justify-content:center;
+        font-family:'Orbitron',sans-serif; font-weight:700;
+    }
+    .achievement-panel {
+        position:fixed; top:0; right:-420px; width:400px; max-width:90vw; height:100vh;
+        background:rgba(6,6,12,0.97); border-left:1px solid rgba(255,204,0,0.15);
+        z-index:9500; transition:right 0.4s cubic-bezier(0.4,0,0.2,1);
+        backdrop-filter:blur(20px); overflow-y:auto; padding:24px;
+    }
+    .achievement-panel.open { right:0; }
+    .achievement-panel-overlay {
+        position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9400;
+        opacity:0; pointer-events:none; transition:opacity 0.3s;
+    }
+    .achievement-panel-overlay.open { opacity:1; pointer-events:all; }
+    .ach-header { font-family:'Orbitron',sans-serif; font-size:18px; color:#ffcc00; letter-spacing:3px; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+    .ach-close { background:none; border:1px solid rgba(255,255,255,0.1); color:#888; width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:14px; margin-left:auto; transition:all 0.2s; }
+    .ach-close:hover { border-color:#ff0055; color:#ff0055; }
+    .ach-card {
+        background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);
+        border-radius:10px; padding:14px; margin-bottom:10px; display:flex; gap:12px;
+        align-items:center; transition:all 0.3s;
+    }
+    .ach-card.earned { border-color:rgba(255,204,0,0.3); background:rgba(255,204,0,0.04); }
+    .ach-card.locked { opacity:0.4; filter:grayscale(0.5); }
+    .ach-icon { font-size:28px; flex-shrink:0; }
+    .ach-info { flex:1; }
+    .ach-name { font-family:'Orbitron',sans-serif; font-size:11px; color:#fff; letter-spacing:1px; }
+    .ach-desc { font-size:10px; color:#555; margin-top:2px; }
+    .ach-status { font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; }
+    .ach-card.earned .ach-status { color:#00ffcc; }
+    .ach-card.locked .ach-status { color:#333; }
+    .ach-progress-bar { width:100%; height:3px; background:rgba(255,255,255,0.05); border-radius:2px; margin-top:6px; overflow:hidden; }
+    .ach-progress-fill { height:100%; background:linear-gradient(90deg,#00ffcc,#ffcc00); border-radius:2px; transition:width 0.4s; }
+
+    /* ========== SHARE BUTTON ========== */
+    .share-btn {
+        position:absolute; top:8px; right:32px; z-index:5;
+        background:none; border:none; font-size:14px; cursor:pointer;
+        opacity:0; transition:all 0.3s; filter:grayscale(1);
+        color:#aaa;
+    }
+    .game-card:hover .share-btn { opacity:0.5; }
+    .share-btn:hover { opacity:1 !important; filter:grayscale(0); transform:scale(1.2); color:#00ffcc; }
+    .game-card.featured .share-btn { top:12px; right:auto; left:44px; }
+    .share-toast {
+        position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px);
+        background:rgba(0,255,204,0.15); border:1px solid rgba(0,255,204,0.4);
+        color:#00ffcc; padding:10px 24px; border-radius:10px; font-size:12px;
+        font-family:'Orbitron',sans-serif; letter-spacing:2px; z-index:99999;
+        backdrop-filter:blur(10px); opacity:0; transition:all 0.3s;
+        pointer-events:none; box-shadow:0 0 30px rgba(0,255,204,0.2);
+    }
+    .share-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ========== PULSING NEW BADGE ========== */
+    .new-badge.pulsing {
+        animation: newPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes newPulse {
+        0%, 100% { box-shadow:0 0 6px rgba(0,255,204,0.4); }
+        50% { box-shadow:0 0 16px rgba(0,255,204,0.8), 0 0 30px rgba(0,255,204,0.3); }
+    }
+
+    /* ========== KEYBOARD NAVIGATION ========== */
+    .game-card.kb-focus {
+        outline:2px solid #00ffcc !important;
+        outline-offset:2px;
+        box-shadow:0 0 30px rgba(0,255,204,0.4), 0 10px 40px rgba(0,0,0,0.6) !important;
+        transform:translateY(-5px) scale(1.02) !important;
+    }
+
+    /* ========== LOADING SCREEN ========== */
+    .game-loading-screen {
+        position:absolute; inset:0; z-index:5; display:flex; flex-direction:column;
+        align-items:center; justify-content:center; background:#06060c;
+        transition:opacity 0.5s;
+    }
+    .game-loading-screen.fade-out { opacity:0; pointer-events:none; }
+    .loading-spinner {
+        width:60px; height:60px; border:3px solid rgba(0,255,204,0.1);
+        border-top-color:#00ffcc; border-radius:50%;
+        animation:loadSpin 0.8s linear infinite;
+    }
+    @keyframes loadSpin { to { transform:rotate(360deg); } }
+    .loading-title {
+        font-family:'Orbitron',sans-serif; font-size:16px; color:#00ffcc;
+        margin-top:20px; letter-spacing:4px;
+    }
+    .loading-tip {
+        font-size:11px; color:#555; margin-top:12px; max-width:300px;
+        text-align:center; line-height:1.5; letter-spacing:0.5px;
+    }
+    .loading-bar-outer {
+        width:200px; height:3px; background:rgba(255,255,255,0.05);
+        border-radius:2px; margin-top:16px; overflow:hidden;
+    }
+    .loading-bar-inner {
+        width:0%; height:100%; background:linear-gradient(90deg,#00ffcc,#aa00ff);
+        border-radius:2px; animation:loadProgress 2.5s ease-out forwards;
+    }
+    @keyframes loadProgress { to { width:90%; } }
+
+    /* ========== BACK TO TOP ROCKET ========== */
+    #back-top .rocket { display:inline-block; transition:transform 0.3s; }
+    #back-top:hover .rocket { transform:translateY(-3px); }
+    #back-top.launching .rocket { animation:rocketLaunch 0.6s ease-out; }
+    @keyframes rocketLaunch {
+        0% { transform:translateY(0); }
+        50% { transform:translateY(-10px) scale(1.2); }
+        100% { transform:translateY(-40px) scale(0.5); opacity:0; }
+    }
+
+    /* ========== SEARCH AUTOCOMPLETE ========== */
+    .autocomplete-dropdown {
+        position:absolute; top:100%; left:0; right:0; margin-top:4px;
+        background:rgba(6,6,12,0.97); border:1px solid rgba(0,255,204,0.2);
+        border-radius:10px; max-height:300px; overflow-y:auto; z-index:100;
+        backdrop-filter:blur(20px); display:none;
+        box-shadow:0 10px 40px rgba(0,0,0,0.6);
+    }
+    .autocomplete-dropdown.show { display:block; }
+    .ac-item {
+        padding:10px 16px; cursor:pointer; display:flex; align-items:center; gap:10px;
+        transition:all 0.15s; border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+    .ac-item:hover, .ac-item.ac-active {
+        background:rgba(0,255,204,0.06);
+    }
+    .ac-item:last-child { border-bottom:none; }
+    .ac-icon { font-size:18px; }
+    .ac-info { flex:1; }
+    .ac-title { font-family:'Orbitron',sans-serif; font-size:11px; color:#ccc; letter-spacing:0.5px; }
+    .ac-desc { font-size:9px; color:#555; margin-top:1px; }
+    .ac-tag { font-size:8px; color:#00ffcc; opacity:0.6; }
+
+    /* ========== DAILY CHALLENGE ========== */
+    .daily-challenge {
+        margin-bottom:16px; padding:12px 18px; border-radius:12px;
+        background:linear-gradient(135deg, rgba(255,204,0,0.06), rgba(255,0,85,0.06));
+        border:1px solid rgba(255,204,0,0.15);
+        display:flex; align-items:center; gap:14px; position:relative; overflow:hidden;
+    }
+    .daily-challenge::before {
+        content:''; position:absolute; inset:0;
+        background:radial-gradient(circle at 10% 50%, rgba(255,204,0,0.1), transparent 60%);
+        animation:spotlightPulse 3s ease infinite;
+    }
+    .dc-badge {
+        font-family:'Orbitron',sans-serif; font-size:9px; color:#ffcc00;
+        letter-spacing:3px; position:relative;
+    }
+    .dc-icon { font-size:36px; position:relative; filter:drop-shadow(0 0 12px rgba(255,204,0,0.4)); }
+    .dc-info { flex:1; position:relative; }
+    .dc-title { font-family:'Orbitron',sans-serif; font-size:13px; color:#fff; letter-spacing:1px; }
+    .dc-desc { font-size:10px; color:#666; margin-top:2px; }
+    .dc-play {
+        padding:8px 20px; background:linear-gradient(135deg,#ffcc00,#ff8800);
+        border:none; border-radius:8px; color:#000; font-family:'Orbitron',sans-serif;
+        font-size:10px; font-weight:700; letter-spacing:2px; cursor:pointer;
+        transition:all 0.3s; position:relative;
+    }
+    .dc-play:hover { transform:scale(1.05); box-shadow:0 0 25px rgba(255,204,0,0.4); }
+    .dc-completed { font-family:'Orbitron',sans-serif; font-size:10px; color:#00ffcc; letter-spacing:2px; position:relative; }
+
+    /* ========== ACHIEVEMENT UNLOCK TOAST ========== */
+    .ach-toast {
+        position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px);
+        background:rgba(6,6,12,0.95); border:1px solid rgba(255,204,0,0.4);
+        padding:14px 24px; border-radius:12px; z-index:99999;
+        display:flex; align-items:center; gap:12px;
+        backdrop-filter:blur(20px); transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);
+        box-shadow:0 0 40px rgba(255,204,0,0.2);
+    }
+    .ach-toast.show { transform:translateX(-50%) translateY(0); }
+    .ach-toast-icon { font-size:28px; }
+    .ach-toast-text { font-family:'Orbitron',sans-serif; font-size:11px; color:#ffcc00; letter-spacing:2px; }
+    .ach-toast-sub { font-size:9px; color:#888; margin-top:2px; letter-spacing:1px; }
+
+    /* ========== SOUND TOGGLE ========== */
+    .sound-toggle {
+        position:fixed; top:16px; right:70px; z-index:9000;
+        width:36px; height:36px; border-radius:50%;
+        background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1);
+        color:#666; font-size:16px; cursor:pointer;
+        backdrop-filter:blur(10px); transition:all 0.3s;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .sound-toggle:hover { border-color:rgba(0,255,204,0.3); color:#aaa; }
+    .sound-toggle.on { border-color:rgba(0,255,204,0.3); color:#00ffcc; }
 </style>
 </head>
 <body>
+<div id="scroll-progress"></div>
 <canvas id="bg-canvas"></canvas>
+<button class="trophy-btn" id="trophyBtn" title="Achievements">&#127942;<span class="badge-count" id="achBadgeCount" style="display:none">0</span></button>
+<button class="sound-toggle" id="soundToggle" title="Toggle Sound">&#128264;</button>
+<div class="share-toast" id="shareToast">LINK COPIED TO CLIPBOARD</div>
+<div class="ach-toast" id="achToast"><span class="ach-toast-icon"></span><div><div class="ach-toast-text">ACHIEVEMENT UNLOCKED</div><div class="ach-toast-sub"></div></div></div>
+<div class="achievement-panel-overlay" id="achOverlay"></div>
+<div class="achievement-panel" id="achPanel">
+    <div class="ach-header">&#127942; ACHIEVEMENTS <button class="ach-close" id="achClose">&times;</button></div>
+    <div id="achList"></div>
+</div>
 <div class="container">
     <header>
         <div class="logo">VOID ARCADE</div>
@@ -341,9 +589,11 @@
         <span class="search-icon">&#128269;</span>
         <input type="text" id="search" placeholder="Search 250+ games..." autocomplete="off">
         <button class="random-btn" id="randomBtn" title="Random Game"><span class="dice">🎲</span> RANDOM</button>
+        <div class="autocomplete-dropdown" id="acDropdown"></div>
     </div>
     <div class="tags" id="tags"></div>
     <div id="gotd-container"></div>
+    <div id="daily-challenge-container"></div>
     <div id="recent-container"></div>
     <div class="controls-bar">
         <div class="controls-left">
@@ -353,6 +603,8 @@
                 <option value="za">Z → A</option>
                 <option value="featured">Featured First</option>
                 <option value="noads">No Ads First</option>
+                <option value="rated">Top Rated</option>
+                <option value="played">Most Played</option>
             </select>
         </div>
         <div class="controls-right">
@@ -370,7 +622,7 @@
         <div style="margin-top:8px;font-size:10px;color:#444;letter-spacing:1px;">TIP: Use an ad blocker (like uBlock Origin) for the best experience on external games</div>
     </footer>
 </div>
-<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#9650;</button>
+<button id="back-top" onclick="rocketToTop()"><span class="rocket">&#128640;</span></button>
 <div id="game-overlay">
     <div class="game-page-header">
         <button class="back-btn" onclick="closeGame()">&larr; BACK</button>
@@ -379,7 +631,13 @@
             <button class="btn-fullscreen" onclick="openFullscreen()">&#9974; NEW TAB</button>
         </div>
     </div>
-    <div class="game-frame-container">
+    <div class="game-frame-container" style="position:relative">
+        <div class="game-loading-screen" id="gameLoadingScreen">
+            <div class="loading-spinner"></div>
+            <div class="loading-title" id="loadingTitle">LOADING</div>
+            <div class="loading-tip" id="loadingTip"></div>
+            <div class="loading-bar-outer"><div class="loading-bar-inner"></div></div>
+        </div>
         <iframe id="game-frame" allow="fullscreen; autoplay; clipboard-write; gamepad" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-orientation-lock allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
     </div>
 </div>
@@ -405,9 +663,11 @@
     draw();
 })();
 
-// ===== BACK TO TOP BUTTON =====
+// ===== BACK TO TOP BUTTON + SCROLL PROGRESS =====
 window.addEventListener('scroll', () => {
     document.getElementById('back-top').style.display = window.scrollY > 600 ? 'flex' : 'none';
+    const scrollPct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('scroll-progress').style.width = Math.min(scrollPct, 100) + '%';
 });
 
 const GAMES = [
@@ -655,6 +915,24 @@ let activeTag = 'all';
 let currentGameUrl = '';
 let currentSort = 'default';
 let currentGridSize = 'md';
+let currentOpenGameTitle = '';
+let currentOpenGameStart = 0;
+
+// ===== RATING SYSTEM =====
+let gameRatings = JSON.parse(localStorage.getItem('va_ratings') || '{}');
+
+// ===== PLAY TIME TRACKER =====
+let playTimes = JSON.parse(localStorage.getItem('va_playtimes') || '{}');
+let totalPlayTime = Object.values(playTimes).reduce((a,b)=>a+b, 0);
+
+// ===== ACHIEVEMENT SYSTEM =====
+let achievements = JSON.parse(localStorage.getItem('va_achievements') || '{}');
+let gamesPlayed = JSON.parse(localStorage.getItem('va_games_played') || '[]');
+let easterEggFound = JSON.parse(localStorage.getItem('va_easter_egg') || 'false');
+let dailyChallengeCompleted = JSON.parse(localStorage.getItem('va_daily_challenge') || '{}');
+
+// ===== SOUND SYSTEM =====
+let soundEnabled = JSON.parse(localStorage.getItem('va_sound') || 'false');
 
 // ===== FAVORITES SYSTEM =====
 let favorites = JSON.parse(localStorage.getItem('va_favorites') || '[]');
@@ -674,6 +952,11 @@ function addRecent(title) {
     recentlyPlayed.unshift(title);
     if (recentlyPlayed.length > 10) recentlyPlayed.pop();
     localStorage.setItem('va_recent', JSON.stringify(recentlyPlayed));
+    if (!gamesPlayed.includes(title)) {
+        gamesPlayed.push(title);
+        localStorage.setItem('va_games_played', JSON.stringify(gamesPlayed));
+    }
+    checkAchievements();
     renderRecent();
 }
 function renderRecent() {
@@ -729,18 +1012,52 @@ renderGOTD();
 renderRecent();
 buildTags();
 
+const LOADING_TIPS = [
+    "Press Escape to return to the arcade.",
+    "Use uBlock Origin for the best ad-free experience.",
+    "Press / to quickly search for games.",
+    "Click the trophy icon to view your achievements.",
+    "Rate games to help us improve recommendations!",
+    "Try the Daily Challenge for a bonus achievement.",
+    "Hover over a game card to see your play time.",
+    "Use arrow keys to navigate game cards.",
+    "Click the share button to copy a game link.",
+    "Press F11 for fullscreen browser mode.",
+];
 function openGame(url, title) {
     currentGameUrl = url;
+    currentOpenGameTitle = title || '';
+    currentOpenGameStart = Date.now();
+    const ls = document.getElementById('gameLoadingScreen');
+    ls.classList.remove('fade-out');
+    ls.style.display = 'flex';
+    document.getElementById('loadingTitle').textContent = 'LOADING ' + (title||'').toUpperCase();
+    document.getElementById('loadingTip').textContent = LOADING_TIPS[Math.floor(Math.random()*LOADING_TIPS.length)];
+    ls.querySelector('.loading-bar-inner').style.animation = 'none';
+    void ls.querySelector('.loading-bar-inner').offsetWidth;
+    ls.querySelector('.loading-bar-inner').style.animation = 'loadProgress 2.5s ease-out forwards';
     gameFrame.src = url;
     document.getElementById('game-page-title').textContent = title || '';
     overlay.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    gameFrame.onload = () => { setTimeout(() => { ls.classList.add('fade-out'); }, 600); };
+    setTimeout(() => { ls.classList.add('fade-out'); }, 4000);
 }
 function closeGame() {
+    if (currentOpenGameTitle && currentOpenGameStart) {
+        const elapsed = Date.now() - currentOpenGameStart;
+        playTimes[currentOpenGameTitle] = (playTimes[currentOpenGameTitle] || 0) + elapsed;
+        localStorage.setItem('va_playtimes', JSON.stringify(playTimes));
+        totalPlayTime = Object.values(playTimes).reduce((a,b)=>a+b, 0);
+        checkAchievements();
+    }
     overlay.style.display = 'none';
     gameFrame.src = '';
     currentGameUrl = '';
+    currentOpenGameTitle = '';
+    currentOpenGameStart = 0;
     document.body.style.overflow = '';
+    renderGames(search.value.toLowerCase(), activeTag);
 }
 function openFullscreen() {
     if (currentGameUrl) window.open(currentGameUrl, '_blank');
@@ -752,11 +1069,14 @@ function sortGames(arr) {
     if (currentSort === 'za') return [...arr].sort((a,b) => b.title.localeCompare(a.title));
     if (currentSort === 'featured') return [...arr].sort((a,b) => (b.featured?1:0)-(a.featured?1:0) || (b.noAds?1:0)-(a.noAds?1:0));
     if (currentSort === 'noads') return [...arr].sort((a,b) => (b.noAds?1:0)-(a.noAds?1:0));
+    if (currentSort === 'rated') return [...arr].sort((a,b) => (gameRatings[b.title]||0)-(gameRatings[a.title]||0));
+    if (currentSort === 'played') return [...arr].sort((a,b) => (playTimes[b.title]||0)-(playTimes[a.title]||0));
     return arr;
 }
 
 function renderGames(filter = '', tag = 'all') {
     grid.innerHTML = '';
+    kbIndex = -1;
     let filtered = GAMES.filter(g => {
         const matchSearch = !filter || g.title.toLowerCase().includes(filter) || g.desc.toLowerCase().includes(filter) || (g.tags && g.tags.some(t => t.includes(filter)));
         let matchTag = true;
@@ -781,19 +1101,25 @@ function renderGames(filter = '', tag = 'all') {
         else if (g.embed) card.onclick = () => { addRecent(g.title); openGame(g.embed, g.title); };
 
         const isFav = favorites.includes(g.title);
+        const rating = gameRatings[g.title] || 0;
+        const playMins = Math.floor((playTimes[g.title] || 0) / 60000);
+        const stars = [1,2,3,4,5].map(s => `<span class="star${s<=rating?' filled':''}" data-val="${s}" data-game="${g.title.replace(/"/g,'&quot;')}">&#9733;</span>`).join('');
         card.innerHTML = `
             <div class="card-banner" style="background:${g.bg}">
                 <div class="shimmer-overlay"></div>
                 ${g.featured ? '<span class="featured-badge">FEATURED</span>' : ''}
-                ${g.isNew ? '<span class="new-badge">NEW</span>' : ''}
+                ${g.isNew ? '<span class="new-badge pulsing">NEW</span>' : ''}
                 ${g.noAds ? `<span class="no-ads-badge${g.isNew ? ' shifted' : ''}">NO ADS</span>` : ''}
                 <span class="card-icon">${g.icon}</span>
+                ${playMins > 0 ? `<div class="playtime-tooltip">${playMins} MIN PLAYED</div>` : '<div class="playtime-tooltip">NOT YET PLAYED</div>'}
             </div>
             <button class="fav-btn${isFav?' active':''}" onclick="toggleFavorite('${g.title.replace(/'/g,"\\'")}', event)">${isFav?'❤️':'🤍'}</button>
+            <button class="share-btn" onclick="shareGame('${g.title.replace(/'/g,"\\'")}', event)" title="Copy link">&#128279;</button>
             <div class="card-body">
                 <div class="card-title">${g.title}</div>
                 <div class="card-desc">${g.desc}</div>
                 <div class="card-tags">${(g.tags||[]).map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+                <div class="star-rating" onclick="event.stopPropagation();event.preventDefault()">${stars}</div>
                 <span class="play-btn">PLAY</span>
             </div>
         `;
@@ -870,7 +1196,338 @@ document.addEventListener('keydown', e => {
     `;
 })();
 
+// ===== STAR RATING CLICK HANDLER =====
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('star')) {
+        e.stopPropagation(); e.preventDefault();
+        const val = parseInt(e.target.dataset.val);
+        const game = e.target.dataset.game;
+        if (game && val) {
+            gameRatings[game] = val;
+            localStorage.setItem('va_ratings', JSON.stringify(gameRatings));
+            const row = e.target.closest('.star-rating');
+            if (row) row.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('filled', parseInt(s.dataset.val) <= val);
+            });
+            playSound('click');
+            checkAchievements();
+        }
+    }
+});
+
+// ===== SHARE BUTTON =====
+function shareGame(title, e) {
+    e.stopPropagation(); e.preventDefault();
+    const g = GAMES.find(g => g.title === title);
+    if (!g) return;
+    const url = g.href ? (window.location.origin + '/' + g.href) : (g.embed || window.location.href);
+    navigator.clipboard.writeText(url).then(() => {
+        const toast = document.getElementById('shareToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }).catch(() => {});
+    playSound('click');
+}
+
+// ===== ROCKET BACK TO TOP =====
+function rocketToTop() {
+    const btn = document.getElementById('back-top');
+    btn.classList.add('launching');
+    playSound('click');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => btn.classList.remove('launching'), 600);
+}
+
+// ===== WEB AUDIO SOUND EFFECTS =====
+let audioCtx = null;
+function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+function playSound(type) {
+    if (!soundEnabled) return;
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.value = 0.04;
+        if (type === 'hover') {
+            osc.type = 'sine'; osc.frequency.value = 800;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+        } else if (type === 'click') {
+            osc.type = 'square'; osc.frequency.value = 600;
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'filter') {
+            osc.type = 'triangle'; osc.frequency.value = 400;
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+        } else if (type === 'achievement') {
+            osc.type = 'sine'; osc.frequency.value = 523;
+            gain.gain.value = 0.06;
+            osc.start();
+            setTimeout(() => {
+                const o2 = audioCtx.createOscillator();
+                const g2 = audioCtx.createGain();
+                o2.connect(g2); g2.connect(audioCtx.destination);
+                o2.type = 'sine'; o2.frequency.value = 659; g2.gain.value = 0.06;
+                g2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                o2.start(); o2.stop(audioCtx.currentTime + 0.3);
+            }, 120);
+            setTimeout(() => {
+                const o3 = audioCtx.createOscillator();
+                const g3 = audioCtx.createGain();
+                o3.connect(g3); g3.connect(audioCtx.destination);
+                o3.type = 'sine'; o3.frequency.value = 784; g3.gain.value = 0.06;
+                g3.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                o3.start(); o3.stop(audioCtx.currentTime + 0.4);
+            }, 240);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+    } catch(e) {}
+}
+
+// Sound toggle
+const soundToggleBtn = document.getElementById('soundToggle');
+soundToggleBtn.className = 'sound-toggle' + (soundEnabled ? ' on' : '');
+soundToggleBtn.innerHTML = soundEnabled ? '&#128264;' : '&#128263;';
+soundToggleBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('va_sound', JSON.stringify(soundEnabled));
+    soundToggleBtn.className = 'sound-toggle' + (soundEnabled ? ' on' : '');
+    soundToggleBtn.innerHTML = soundEnabled ? '&#128264;' : '&#128263;';
+    if (soundEnabled) { initAudio(); playSound('click'); }
+});
+
+// Hover sounds on game cards
+document.addEventListener('mouseover', e => {
+    if (e.target.closest('.game-card') && !e.target.closest('.fav-btn') && !e.target.closest('.share-btn') && !e.target.closest('.star-rating')) {
+        playSound('hover');
+    }
+});
+
+// Filter change sound
+tagsEl.addEventListener('click', e => { if (e.target.closest('.tag')) playSound('filter'); });
+
+// ===== ACHIEVEMENT DEFINITIONS =====
+const ACH_DEFS = [
+    { id:'play10', icon:'🎮', name:'CASUAL GAMER', desc:'Play 10 different games', check:()=>gamesPlayed.length>=10, progress:()=>Math.min(gamesPlayed.length,10), max:10 },
+    { id:'play50', icon:'🏆', name:'DEDICATED PLAYER', desc:'Play 50 different games', check:()=>gamesPlayed.length>=50, progress:()=>Math.min(gamesPlayed.length,50), max:50 },
+    { id:'noads_all', icon:'✅', name:'AD-FREE WARRIOR', desc:'Play all NO ADS games', check:()=>{ const na=GAMES.filter(g=>g.noAds).map(g=>g.title); return na.every(t=>gamesPlayed.includes(t)); }, progress:()=>GAMES.filter(g=>g.noAds).filter(g=>gamesPlayed.includes(g.title)).length, max:GAMES.filter(g=>g.noAds).length },
+    { id:'rate20', icon:'⭐', name:'GAME CRITIC', desc:'Rate 20 different games', check:()=>Object.keys(gameRatings).length>=20, progress:()=>Math.min(Object.keys(gameRatings).length,20), max:20 },
+    { id:'playtime100', icon:'⏱️', name:'TIME LORD', desc:'Play 100 total minutes', check:()=>totalPlayTime>=6000000, progress:()=>Math.min(Math.floor(totalPlayTime/60000),100), max:100 },
+    { id:'easter_egg', icon:'🥚', name:'EGG HUNTER', desc:'Find the hidden easter egg', check:()=>easterEggFound, progress:()=>easterEggFound?1:0, max:1 },
+    { id:'daily_challenge', icon:'📅', name:'DAILY CHALLENGER', desc:'Complete the daily challenge', check:()=>{ const today=new Date().toISOString().slice(0,10); return dailyChallengeCompleted[today]; }, progress:()=>{ const today=new Date().toISOString().slice(0,10); return dailyChallengeCompleted[today]?1:0; }, max:1 },
+];
+
+function checkAchievements() {
+    let newUnlock = null;
+    ACH_DEFS.forEach(a => {
+        if (!achievements[a.id] && a.check()) {
+            achievements[a.id] = Date.now();
+            newUnlock = a;
+        }
+    });
+    localStorage.setItem('va_achievements', JSON.stringify(achievements));
+    updateAchBadge();
+    if (newUnlock) showAchToast(newUnlock);
+}
+
+function updateAchBadge() {
+    const earned = ACH_DEFS.filter(a => achievements[a.id]).length;
+    const badge = document.getElementById('achBadgeCount');
+    if (earned > 0) { badge.style.display = 'flex'; badge.textContent = earned; }
+    else badge.style.display = 'none';
+}
+
+function showAchToast(ach) {
+    playSound('achievement');
+    const toast = document.getElementById('achToast');
+    toast.querySelector('.ach-toast-icon').textContent = ach.icon;
+    toast.querySelector('.ach-toast-sub').textContent = ach.name;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+function renderAchievements() {
+    const list = document.getElementById('achList');
+    list.innerHTML = ACH_DEFS.map(a => {
+        const earned = !!achievements[a.id];
+        const prog = a.progress();
+        const pct = Math.min((prog / a.max) * 100, 100);
+        return `<div class="ach-card ${earned?'earned':'locked'}">
+            <div class="ach-icon">${a.icon}</div>
+            <div class="ach-info">
+                <div class="ach-name">${a.name}</div>
+                <div class="ach-desc">${a.desc}</div>
+                <div class="ach-progress-bar"><div class="ach-progress-fill" style="width:${pct}%"></div></div>
+                <div class="ach-status">${earned ? 'UNLOCKED' : prog + ' / ' + a.max}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Achievement panel open/close
+document.getElementById('trophyBtn').addEventListener('click', () => {
+    renderAchievements();
+    document.getElementById('achPanel').classList.add('open');
+    document.getElementById('achOverlay').classList.add('open');
+    playSound('click');
+});
+document.getElementById('achClose').addEventListener('click', () => {
+    document.getElementById('achPanel').classList.remove('open');
+    document.getElementById('achOverlay').classList.remove('open');
+});
+document.getElementById('achOverlay').addEventListener('click', () => {
+    document.getElementById('achPanel').classList.remove('open');
+    document.getElementById('achOverlay').classList.remove('open');
+});
+updateAchBadge();
+
+// ===== EASTER EGG (Konami Code) =====
+let konamiSeq = [];
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+document.addEventListener('keydown', e => {
+    konamiSeq.push(e.key);
+    if (konamiSeq.length > KONAMI.length) konamiSeq.shift();
+    if (konamiSeq.join(',') === KONAMI.join(',')) {
+        easterEggFound = true;
+        localStorage.setItem('va_easter_egg', 'true');
+        checkAchievements();
+        document.body.style.animation = 'gradientShift 1s ease 3';
+    }
+});
+
+// ===== KEYBOARD NAVIGATION =====
+let kbIndex = -1;
+document.addEventListener('keydown', e => {
+    if (document.activeElement === search || overlay.style.display === 'block') return;
+    const cards = Array.from(grid.querySelectorAll('.game-card'));
+    if (!cards.length) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        cards.forEach(c => c.classList.remove('kb-focus'));
+        kbIndex = Math.min(kbIndex + 1, cards.length - 1);
+        cards[kbIndex].classList.add('kb-focus');
+        cards[kbIndex].scrollIntoView({ behavior:'smooth', block:'center' });
+        playSound('hover');
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        cards.forEach(c => c.classList.remove('kb-focus'));
+        kbIndex = Math.max(kbIndex - 1, 0);
+        cards[kbIndex].classList.add('kb-focus');
+        cards[kbIndex].scrollIntoView({ behavior:'smooth', block:'center' });
+        playSound('hover');
+    } else if (e.key === 'Enter' && kbIndex >= 0 && kbIndex < cards.length) {
+        e.preventDefault();
+        cards[kbIndex].click();
+        playSound('click');
+    }
+});
+// Keyboard index gets reset in renderGames()
+
+// ===== SEARCH AUTOCOMPLETE =====
+const acDropdown = document.getElementById('acDropdown');
+let acIndex = -1;
+search.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    if (q.length < 2) { acDropdown.classList.remove('show'); acDropdown.innerHTML = ''; return; }
+    const matches = GAMES.filter(g =>
+        g.title.toLowerCase().includes(q) ||
+        g.desc.toLowerCase().includes(q) ||
+        (g.tags && g.tags.some(t => t.includes(q)))
+    ).slice(0, 8);
+    if (!matches.length) { acDropdown.classList.remove('show'); return; }
+    acIndex = -1;
+    acDropdown.innerHTML = matches.map((g, i) =>
+        `<div class="ac-item" data-idx="${i}" onclick="acSelect('${g.title.replace(/'/g,"\\'")}')" data-title="${g.title.replace(/"/g,'&quot;')}">
+            <span class="ac-icon">${g.icon}</span>
+            <div class="ac-info"><div class="ac-title">${g.title}</div><div class="ac-desc">${g.desc}</div></div>
+            <span class="ac-tag">${(g.tags||[])[0]||''}</span>
+        </div>`
+    ).join('');
+    acDropdown.classList.add('show');
+});
+function acSelect(title) {
+    search.value = title;
+    acDropdown.classList.remove('show');
+    renderGames(title.toLowerCase(), activeTag);
+    const g = GAMES.find(g => g.title === title);
+    if (g) playGame(g);
+}
+search.addEventListener('keydown', e => {
+    const items = acDropdown.querySelectorAll('.ac-item');
+    if (!items.length || !acDropdown.classList.contains('show')) return;
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        acIndex = Math.min(acIndex + 1, items.length - 1);
+        items.forEach(it => it.classList.remove('ac-active'));
+        items[acIndex].classList.add('ac-active');
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        acIndex = Math.max(acIndex - 1, 0);
+        items.forEach(it => it.classList.remove('ac-active'));
+        items[acIndex].classList.add('ac-active');
+    } else if (e.key === 'Enter' && acIndex >= 0) {
+        e.preventDefault();
+        const title = items[acIndex].dataset.title;
+        acSelect(title);
+    } else if (e.key === 'Escape') {
+        acDropdown.classList.remove('show');
+    }
+});
+document.addEventListener('click', e => {
+    if (!e.target.closest('.search-bar')) acDropdown.classList.remove('show');
+});
+
+// ===== DAILY CHALLENGE =====
+function getDailyChallenge() {
+    const today = new Date().toISOString().slice(0,10);
+    const seed = today.split('-').join('');
+    const idx = parseInt(seed) % GAMES.length;
+    return { game: GAMES[idx], date: today };
+}
+function renderDailyChallenge() {
+    const dc = getDailyChallenge();
+    const g = dc.game;
+    const today = dc.date;
+    const completed = dailyChallengeCompleted[today];
+    const el = document.getElementById('daily-challenge-container');
+    el.innerHTML = `<div class="daily-challenge" style="--accent:${g.accent}">
+        <div class="dc-icon">${g.icon}</div>
+        <div class="dc-info">
+            <div class="dc-badge">&#128197; DAILY CHALLENGE</div>
+            <div class="dc-title">${g.title}</div>
+            <div class="dc-desc">Play today's featured game!</div>
+        </div>
+        ${completed
+            ? '<div class="dc-completed">&#10003; COMPLETED</div>'
+            : `<button class="dc-play" onclick="playDailyChallenge()">ACCEPT</button>`
+        }
+    </div>`;
+}
+function playDailyChallenge() {
+    const dc = getDailyChallenge();
+    const today = dc.date;
+    dailyChallengeCompleted[today] = true;
+    localStorage.setItem('va_daily_challenge', JSON.stringify(dailyChallengeCompleted));
+    playGame(dc.game);
+    checkAchievements();
+    renderDailyChallenge();
+}
+renderDailyChallenge();
+
+// ===== GAME COUNT PER CATEGORY (already handled via buildTags counts) =====
+// The tag counts are already displayed via buildTags()
+
+// ===== INITIAL RENDER =====
 renderGames();
+checkAchievements();
 </script>
 </body>
 </html>
